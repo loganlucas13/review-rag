@@ -1,5 +1,5 @@
-Flask
-textual
-textual-dev
-psycopg2
-dotenv
+Flask==3.1.2
+textual==6.6.0
+textual-dev==1.8.0
+psycopg2==2.9.11
+dotenv==0.9.9
