@@ -16,3 +16,4 @@ def root_route():
 if __name__ == "__main__":
     print("start of program")
     cursor = login()
+    print(f"cursor: {cursor}")
