@@ -2,6 +2,7 @@
 # note: not sure exactly where to go from here
 
 from flask import Flask
+from postgres_login import login
 
 app = Flask(__name__)
 
@@ -14,3 +15,4 @@ def root_route():
 
 if __name__ == "__main__":
     print("start of program")
+    cursor = login()

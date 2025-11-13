@@ -1,3 +1,5 @@
 Flask
 textual
 textual-dev
+psycopg2
+dotenv

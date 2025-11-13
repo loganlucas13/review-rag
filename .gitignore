@@ -1,2 +1,6 @@
 # venv file
 *.venv
+
+# environment variables (keep sample)
+*.env
+!*sample.env
