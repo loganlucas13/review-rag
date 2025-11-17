@@ -8,14 +8,6 @@ from dotenv import load_dotenv
 def login():
     load_dotenv()
 
-    print("logging in...")
-    print("environment variables:")
-    print(f"  {os.getenv('POSTGRES_HOST')}")
-    print(f"  {os.getenv('POSTGRES_PORT')}")
-    print(f"  {os.getenv('POSTGRES_DB')}")
-    print(f"  {os.getenv('POSTGRES_USER')}")
-    print(f"  {os.getenv('POSTGRES_PASSWORD')}")
-
     conn = psycopg2.connect(
         host=os.getenv("POSTGRES_HOST"),
         port=os.getenv("POSTGRES_PORT"),
