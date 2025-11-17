@@ -23,7 +23,3 @@ if __name__ == "__main__":
     data = wine_data_extraction(CSV_DATA_FILE)
     chunked_data = chunk_text(data)
     embeddings = create_embeddings(chunked_data)
-    print(f"Embedding matrix shape: {embeddings.shape}")
-    print(f"Number of embeddings: {embeddings.shape[0]}")
-    print(f"Dimensions per embedding: {embeddings.shape[1]}")
-    print(f"\nFirst embedding (first 10 values):\n{embeddings[0][:10]}")

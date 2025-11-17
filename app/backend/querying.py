@@ -1,2 +1,2 @@
-# query answering step
-# phase 3 step 4
+# Query answering
+# Phase 3: Step 4

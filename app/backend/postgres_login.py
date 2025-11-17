@@ -3,8 +3,8 @@ import os
 from dotenv import load_dotenv
 
 
-# login to postgres server using .env password
-# returns connection cursor
+# Login to postgres server using .env password
+# Returns connection cursor
 def login():
     load_dotenv()
 
@@ -16,9 +16,3 @@ def login():
         password=os.getenv("POSTGRES_PASSWORD"),
     )
     return conn.cursor()
-
-
-if __name__ == "__main__":
-    print("testing postgres_login file...")
-    cursor = login()
-    print(f"successfully connected: {cursor}")
