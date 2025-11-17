@@ -3,6 +3,7 @@
 
 from flask import Flask
 from postgres_login import login
+from chunking import wine_data_extraction, chunk_text
 
 app = Flask(__name__)
 
@@ -14,6 +15,5 @@ def root_route():
 
 
 if __name__ == "__main__":
-    print("start of program")
     cursor = login()
-    print(f"cursor: {cursor}")
+    data = wine_data_extraction()
