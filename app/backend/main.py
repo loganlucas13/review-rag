@@ -6,6 +6,7 @@ import numpy as np
 from postgres_login import login
 from chunking import wine_data_extraction, chunk_text
 from vector_embedding import create_embeddings
+from vector_db import save_to_vector_database
 
 app = Flask(__name__)
 
