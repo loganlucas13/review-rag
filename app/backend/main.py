@@ -23,3 +23,5 @@ if __name__ == "__main__":
     data = wine_data_extraction(CSV_DATA_FILE)
     chunked_data = chunk_text(data)
     embeddings = create_embeddings(chunked_data)
+
+    save_to_vector_database(cursor, embeddings, chunked_data)
