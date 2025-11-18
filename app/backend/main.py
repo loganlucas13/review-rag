@@ -33,7 +33,9 @@ if __name__ == "__main__":
         print("Saving embedding into database")
         save_to_vector_database(cursor, embeddings, chunked_data)
         print("Data saved successfuly into database")
-
     except Exception as e:
         print(f"Error: {str(e)}")
         raise
+
+    print("Starting Flask server...")
+    app.run(host="0.0.0.0", port=4196, debug=True)
