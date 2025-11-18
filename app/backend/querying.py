@@ -7,13 +7,16 @@ import psycopg2
 
 
 # change the k for k nearest neighbors
+
+# Inner Product: also called dot product
+# scores between -inf to inf, higher is more similar
 def inner_product(curr, query, k: int = 5) -> List[int]:
     print("in inner product")
     query_embedding = create_embeddings([query])[0]
     print("query embedded")
 
     # <#> is negative inner product, multiply by -1 to get actual inner product
-    query = """
+    sql_query = """
         SELECT id, chunk,
                (embedding <#> %s::vector) * -1 AS dot_product
         FROM Vectors
@@ -21,17 +24,29 @@ def inner_product(curr, query, k: int = 5) -> List[int]:
         LIMIT %s;
     """
     print("executing query")
-    curr.execute(query, (query_embedding.tolist(), query_embedding.tolist(), k))
+    curr.execute(sql_query, (query_embedding.tolist(), query_embedding.tolist(), k))
 
     print("executed query")
     results = curr.fetchall()
     print("fetched results")
     return format_results(results, "inner_product")
 
-
+# Cosine Similarity: scores between -1 to 1, 1 being most similar
 def cosine_similarity(curr, query, k: int = 5) -> List[int]:
-    pass
+    query_embedding = create_embeddings([query])[0]
 
+    # <=> is cosine distance
+    sql_query = """
+        SELECT id, chunk,
+               1 - (embedding <=> %s::vector) AS cosine_similarity
+        FROM Vectors
+        ORDER BY embedding <=> %s::vector
+        LIMIT %s;
+    """
+    curr.execute(sql_query, (query_embedding.tolist(), query_embedding.tolist(), k))
+
+    results = curr.fetchall()
+    return format_results(results, "cosine_similarity")
 
 def format_results(results, algorithm_name):
     print("formatting results")
