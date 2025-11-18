@@ -1,4 +1,4 @@
-# Storing emeddings into vector database
+# Storing embeddings into vector database
 # Phase 3: Step 3
 
 from typing import List
@@ -22,11 +22,11 @@ def db_setup(cursor: cursor) -> None:
     );
     """)
 
-    # clear existing vector data (temporary, will remove during next phase)
+    # clear existing vector data (temporary, will remove during next phase to persist data)
     cursor.execute("TRUNCATE TABLE Vectors RESTART IDENTITY;")
 
     cursor.connection.commit()
-    print("Vector Database Setup Successfully")
+    print("Vector database setup successfully\n")
 
 
 # Saves vector embeddings to vector database using pgvector
@@ -67,7 +67,6 @@ def save_to_vector_database(
             if len(data_for_insert) >= batch_size:
                 cursor.executemany(insert_table, data_for_insert)
                 cursor.connection.commit()
-                print(f"Processed a batch of {len(data_for_insert)} records")
                 progressBar.update(len(data_for_insert))
                 data_for_insert = []
 
@@ -75,7 +74,6 @@ def save_to_vector_database(
     if data_for_insert:
         cursor.executemany(insert_table, data_for_insert)
         cursor.connection.commit()
-        print(f"Inserted final batch of {len(data_for_insert)} records")
         progressBar.update(len(data_for_insert))
 
-    print(f"Successfully saved {len(embeddings)} embeddings to the vector database")
+    print(f"Successfully saved {len(embeddings)} embeddings to the vector database\n")

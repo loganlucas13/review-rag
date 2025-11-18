@@ -3,17 +3,13 @@
 
 from typing import List
 from vector_embedding import create_embeddings
-import psycopg2
+from psycopg2.extensions import cursor
 
 
-# change the k for k nearest neighbors
-
-# Inner Product: also called dot product
+# Inner Product/Dot Product
 # scores between -inf to inf, higher is more similar
-def inner_product(curr, query, k: int = 5) -> List[int]:
-    print("in inner product")
+def inner_product(cursor: cursor, query: str, k: int = 5) -> List[int]:
     query_embedding = create_embeddings([query])[0]
-    print("query embedded")
 
     # <#> is negative inner product, multiply by -1 to get actual inner product
     sql_query = """
@@ -23,16 +19,14 @@ def inner_product(curr, query, k: int = 5) -> List[int]:
         ORDER BY embedding <#> %s::vector
         LIMIT %s;
     """
-    print("executing query")
-    curr.execute(sql_query, (query_embedding.tolist(), query_embedding.tolist(), k))
+    cursor.execute(sql_query, (query_embedding.tolist(), query_embedding.tolist(), k))
 
-    print("executed query")
-    results = curr.fetchall()
-    print("fetched results")
+    results = cursor.fetchall()
     return format_results(results, "inner_product")
 
+
 # Cosine Similarity: scores between -1 to 1, 1 being most similar
-def cosine_similarity(curr, query, k: int = 5) -> List[int]:
+def cosine_similarity(cursor: cursor, query: str, k: int = 5) -> List[int]:
     query_embedding = create_embeddings([query])[0]
 
     # <=> is cosine distance
@@ -43,13 +37,14 @@ def cosine_similarity(curr, query, k: int = 5) -> List[int]:
         ORDER BY embedding <=> %s::vector
         LIMIT %s;
     """
-    curr.execute(sql_query, (query_embedding.tolist(), query_embedding.tolist(), k))
+    cursor.execute(sql_query, (query_embedding.tolist(), query_embedding.tolist(), k))
 
-    results = curr.fetchall()
+    results = cursor.fetchall()
     return format_results(results, "cosine_similarity")
 
-def format_results(results, algorithm_name):
-    print("formatting results")
+
+# Formats results into a list of dicts
+def format_results(results: List[str], algorithm_name: str) -> List[dict]:
     formatted = []
     for row in results:
         formatted.append(
@@ -60,5 +55,4 @@ def format_results(results, algorithm_name):
                 "algorithm": algorithm_name,
             }
         )
-    print("results formatted")
     return formatted
