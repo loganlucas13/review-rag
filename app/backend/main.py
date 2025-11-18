@@ -4,6 +4,7 @@ from postgres_login import login
 from chunking import wine_data_extraction, chunk_text
 from vector_embedding import create_embeddings
 from vector_db import db_setup, save_to_vector_database
+from querying import inner_product
 
 app = Flask(__name__)
 
@@ -33,6 +34,9 @@ if __name__ == "__main__":
         print("Saving embedding into database")
         save_to_vector_database(cursor, embeddings, chunked_data)
         print("Data saved successfuly into database")
+        result = inner_product(cursor, input("Enter a query: "))
+        #result = cosine_similarity(cursor, input("Enter a query: "))
+        print(result)
     except Exception as e:
         print(f"Error: {str(e)}")
         raise
