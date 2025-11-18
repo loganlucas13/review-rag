@@ -22,6 +22,9 @@ def db_setup(cursor: cursor) -> None:
     );
     """)
 
+    # clear existing vector data (temporary, will remove during next phase)
+    cursor.execute("TRUNCATE TABLE Vectors RESTART IDENTITY;")
+
     cursor.connection.commit()
     print("Vector Database Setup Successfully")
 

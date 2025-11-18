@@ -28,18 +28,23 @@ if __name__ == "__main__":
         print("Extracting Wine Data")
         data = wine_data_extraction(CSV_DATA_FILE)
         print("Chunking Text Data")
-        chunked_data = chunk_text(data)
+        chunked_data = chunk_text(data, max_words=25, overlap=5)
         print(f"Embedding {len(chunked_data)} amount of chunks")
         embeddings = create_embeddings(chunked_data)
         print("Saving embedding into database")
         save_to_vector_database(cursor, embeddings, chunked_data)
         print("Data saved successfuly into database")
-        result = inner_product(cursor, input("Enter a query: "))
-        #result = cosine_similarity(cursor, input("Enter a query: "))
-        print(result)
+        results = inner_product(cursor, "Italian wine")
+        for result in results:
+            print(f"{result.get('id', '')}:")
+            print(f"  {result.get('text', '')}")
+            print(f"  {result.get('score', '')}")
+            print(f"  {result.get('algorithm', '')}")
+            print()
+
     except Exception as e:
         print(f"Error: {str(e)}")
         raise
 
     print("Starting Flask server...")
-    app.run(host="0.0.0.0", port=4196, debug=True)
+    app.run(host="0.0.0.0", port=4196, debug=True, use_reloader=False)
