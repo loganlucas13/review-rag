@@ -1,13 +1,12 @@
 # Chunking text
 # Phase 3: Step 1
 
-import numpy as np
 import pandas as pd
 from typing import List
 
 
 # Parses row data and returns required fields as a formatted string
-def create_row_text(row):
+def create_row_text(row: dict) -> str:
     country = row["country"]
     description = row["description"]
     province = row["province"]
@@ -18,7 +17,8 @@ def create_row_text(row):
 
 
 # Wine data extraction from CSV file
-def wine_data_extraction(file: str):
+# Returns a single string with all data (for chunking)
+def wine_data_extraction(file: str) -> str:
     dataframe = pd.read_csv(
         file, usecols=["country", "description", "province", "region_1", "region_2"]
     )

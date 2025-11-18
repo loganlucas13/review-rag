@@ -1,11 +1,12 @@
 import psycopg2
+from psycopg2.extensions import cursor
 import os
 from dotenv import load_dotenv
 
 
 # Login to postgres server using .env password
 # Returns connection cursor
-def login():
+def login() -> cursor:
     load_dotenv()
 
     conn = psycopg2.connect(
