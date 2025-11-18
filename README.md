@@ -15,7 +15,7 @@
     - `save_to_vector_database()`
 4. Step 4: Query Answering:
     - Located in `app/backend/querying.py`.
-    - `answer_query()`
+    - `inner_product()` and `cosine_similarity()`
 
 ## Setup
 

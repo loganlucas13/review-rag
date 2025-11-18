@@ -34,7 +34,15 @@ if __name__ == "__main__":
         print("Saving embedding into database")
         save_to_vector_database(cursor, embeddings, chunked_data)
         print("Data saved successfuly into database")
-        #results = cosine_similarity(cursor, input("Enter a query: "))
+
+        results = cosine_similarity(cursor, "Italian wine")
+        for result in results:
+            print(f"{result.get('id', '')}:")
+            print(f"  {result.get('text', '')}")
+            print(f"  {result.get('score', '')}")
+            print(f"  {result.get('algorithm', '')}")
+            print()
+
         results = inner_product(cursor, "Italian wine")
         for result in results:
             print(f"{result.get('id', '')}:")
