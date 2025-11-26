@@ -8,7 +8,7 @@
 ## Phase 3 Requirements
 
 > [!NOTE]
-> All helper functions are called in app/backend/main.py.
+> All helper functions are called in `app/backend/main.py`.
 
 ### Step 1: Chunking:
 

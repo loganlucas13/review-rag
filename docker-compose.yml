@@ -16,7 +16,9 @@ services:
             retries: 5
 
     backend:
-        build: .
+        build:
+            context: ./app/backend
+            dockerfile: Dockerfile
         container_name: python_backend
         restart: on-failure
         depends_on:
@@ -27,8 +29,26 @@ services:
         ports:
             - '4196:4196'
         volumes:
-            - .:/app
-        command: python app/backend/main.py
+            - ./app/backend:/app
+
+    frontend:
+        build:
+            context: ./app/frontend
+            dockerfile: Dockerfile
+        container_name: react_frontend
+        restart: 'no'
+        stdin_open: true
+        tty: true
+        depends_on:
+            - backend
+        env_file:
+            - .env
+        ports:
+            - '5173:5173'
+        volumes:
+            - ./app/frontend:/app
+            - /app/node_modules
+        command: npm run dev -- --host
 
 volumes:
     pg_data:

@@ -1,10 +1,13 @@
-# CLI interface
+# Frontend Web App
 
 > [!WARNING]
 > WIP
 
--   Uses [Textual](https://textual.textualize.io/).
+-   Uses [React](https://react.dev/), [Vite](https://vite.dev/), and [TailwindCSS](https://tailwindcss.com/).
 
 ## Instructions
 
-1. ?
+> [!NOTE]
+> Make sure to have `npm` installed.
+
+1. To run the frontend by itself, run the commands `npm i` and `npm run dev` in the terminal.

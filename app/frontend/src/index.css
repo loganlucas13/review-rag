@@ -1,0 +1,13 @@
+@font-face {
+    font-family: 'Share Tech Mono';
+    src: url('./assets/fonts/Share_Tech_Mono/ShareTechMono-Regular.ttf')
+        format('truetype');
+}
+
+@import 'tailwindcss';
+
+@layer base {
+    * {
+        font-family: 'Share Tech Mono', sans-serif;
+    }
+}
