@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { clamp } from '../utils/clamp';
 import { ArrowBigLeftDashIcon } from 'lucide-react';
+import { Button } from './Button';
+import { Input } from './Input';
 
 type FormProps = {
     goBack: () => void;
@@ -32,28 +34,28 @@ const LoginForm = ({ goBack }: FormProps) => {
             <div className="flex flex-col items-center justify-center gap-4 bg-slate-900 text-slate-400 border-2 border-slate-600 px-2 py-2 rounded-xs w-1/5 mr-[60px]">
                 <h1 className="text-2xl font-semibold">Log In</h1>
                 <div className="flex flex-col gap-2 w-full">
-                    <input
-                        placeholder="Username"
-                        className="border-2 px-2 py-1 border-slate-500 focus:outline-none rounded-xs"
-                        onChange={(e) => setUsername(e.target.value)}
+                    <Input
                         value={username}
-                    ></input>
-                    <input
+                        onChange={setUsername}
+                        placeholder="Username"
+                    />
+
+                    <Input
+                        value={password}
+                        onChange={setPassword}
                         placeholder="Password"
                         type="password"
-                        className="border-2 px-2 py-1 border-slate-500 focus:outline-none rounded-xs"
-                        onChange={(e) => setPassword(e.target.value)}
-                        value={password}
-                    ></input>
+                    />
 
-                    <button
+                    <Button
                         onClick={() => {
                             handleSubmit();
                         }}
-                        className="bg-slate-600 text-slate-400 text-lg font-semibold rounded-xs hover:cursor-pointer"
+                        variant="secondary"
+                        size="small"
                     >
                         Submit
-                    </button>
+                    </Button>
                 </div>
             </div>
         </>
@@ -127,71 +129,73 @@ const SignupForm = ({ goBack }: FormProps) => {
                     {/* input boxes */}
                     {currentTab === 0 && (
                         <>
-                            <input
-                                placeholder="Username"
-                                className="border-2 px-2 py-1 border-slate-500 focus:outline-none rounded-xs"
-                                onChange={(e) => setUsername(e.target.value)}
+                            <Input
                                 value={username}
-                            ></input>
-                            <input
+                                onChange={setUsername}
+                                placeholder="Username"
+                            />
+
+                            <Input
+                                value={password}
+                                onChange={setPassword}
                                 placeholder="Password"
                                 type="password"
-                                className="border-2 px-2 py-1 border-slate-500 focus:outline-none rounded-xs"
-                                onChange={(e) => setPassword(e.target.value)}
-                                value={password}
-                            ></input>
+                            />
                         </>
                     )}
                     {currentTab === 1 && (
                         <>
-                            <input
-                                placeholder="Name"
-                                className="border-2 px-2 py-1 border-slate-500 focus:outline-none rounded-xs"
-                                onChange={(e) => setName(e.target.value)}
+                            <Input
                                 value={name}
-                            ></input>
-                            <input
-                                placeholder="Email"
-                                type="password"
-                                className="border-2 px-2 py-1 border-slate-500 focus:outline-none rounded-xs"
-                                onChange={(e) => setEmail(e.target.value)}
+                                onChange={setName}
+                                placeholder="Name"
+                            />
+
+                            <Input
                                 value={email}
-                            ></input>
+                                onChange={setEmail}
+                                placeholder="Email"
+                                type="email"
+                            />
                         </>
                     )}
 
                     {/* confirm buttons at bottom */}
                     {currentTab === 0 && (
                         <>
-                            <button
+                            <Button
                                 onClick={() => {
                                     handleTabSwitch('forward');
                                 }}
-                                className="bg-slate-600 text-slate-400 text-lg font-semibold rounded-xs hover:cursor-pointer"
+                                variant="secondary"
+                                size="small"
                             >
                                 Next
-                            </button>
+                            </Button>
                         </>
                     )}
                     {currentTab === 1 && (
                         <>
                             <div className="flex flex-row gap-2 w-full">
-                                <button
+                                <Button
                                     onClick={() => {
                                         handleTabSwitch('back');
                                     }}
-                                    className="bg-red-400 text-red-900 text-lg font-semibold rounded-xs hover:cursor-pointer px-2"
+                                    variant="destructive"
+                                    size="small"
                                 >
                                     Back
-                                </button>
-                                <button
+                                </Button>
+                                <Button
                                     onClick={() => {
                                         handleSubmit();
                                     }}
-                                    className="w-full bg-slate-600 text-slate-400 text-lg font-semibold rounded-xs hover:cursor-pointer"
+                                    variant="secondary"
+                                    size="small"
+                                    className="w-full"
                                 >
                                     Submit
-                                </button>
+                                </Button>
                             </div>
                         </>
                     )}
