@@ -12,7 +12,7 @@ const HomeButton = ({ goBack }: FormProps) => {
     return (
         <button
             onClick={() => goBack()}
-            className="flex bg-slate-900 text-slate-400 border-2 border-slate-600 p-3 rounded-xs hover:cursor-pointer"
+            className="flex bg-neutral-900 text-neutral-300 border-2 border-neutral-600 p-3 rounded-xs hover:cursor-pointer"
         >
             <ArrowBigLeftDashIcon size={32} />
         </button>
@@ -31,8 +31,10 @@ const LoginForm = ({ goBack }: FormProps) => {
     return (
         <>
             <HomeButton goBack={goBack} />
-            <div className="flex flex-col items-center justify-center gap-4 bg-slate-900 text-slate-400 border-2 border-slate-600 px-2 py-2 rounded-xs w-1/5 mr-[60px]">
-                <h1 className="text-2xl font-semibold">Log In</h1>
+            <div className="flex flex-col items-center justify-center gap-4 bg-neutral-900 text-neutral-300 border-2 border-neutral-600 px-2 py-2 rounded-xs w-1/5 mr-[60px]">
+                <h1 className="text-3xl font-semibold underline decoration-2">
+                    Log In
+                </h1>
                 <div className="flex flex-col gap-2 w-full">
                     <Input
                         value={username}
@@ -101,8 +103,10 @@ const SignupForm = ({ goBack }: FormProps) => {
     return (
         <>
             <HomeButton goBack={goBack} />
-            <div className="flex flex-col items-center justify-center gap-4 bg-slate-900 text-slate-400 border-2 border-slate-600 px-2 py-2 rounded-xs w-1/5 mr-[60px]">
-                <h1 className="text-2xl font-semibold">Sign Up</h1>
+            <div className="flex flex-col items-center justify-center gap-4 bg-neutral-900 text-neutral-300 border-2 border-neutral-600 px-2 py-2 rounded-xs w-1/5 mr-[60px]">
+                <h1 className="text-3xl font-semibold underline decoration-2">
+                    Sign Up
+                </h1>
                 <div className="flex flex-col gap-2 w-full">
                     {/* role options */}
                     {currentTab === 0 && (
@@ -113,8 +117,8 @@ const SignupForm = ({ goBack }: FormProps) => {
                                     className={
                                         `border-2 px-1 py-1 w-1/3 rounded-xs hover:cursor-pointer ` +
                                         (role_type === role
-                                            ? 'bg-slate-600 text-slate-400'
-                                            : 'border-slate-500')
+                                            ? 'bg-neutral-600 text-neutral-300'
+                                            : 'border-neutral-500')
                                     }
                                     onClick={() => {
                                         handleRoleClick(role_type);

@@ -3,8 +3,8 @@ type ButtonSize = 'default' | 'small' | 'large';
 
 const variantStyles = {
     primary:
-        'bg-slate-900 text-slate-400 border-2 border-slate-600 font-semibold',
-    secondary: 'bg-slate-600 text-slate-400 text-lg font-semibold',
+        'bg-neutral-900 text-neutral-300 border-2 border-neutral-600 font-semibold',
+    secondary: 'bg-neutral-600 text-neutral-300 text-lg font-semibold',
     destructive: 'bg-red-400 text-red-900',
 };
 
@@ -29,7 +29,8 @@ const Button = ({
     size = 'default',
     className = '',
 }: ButtonProps) => {
-    const defaultStyles = 'rounded-xs hover: cursor-pointer';
+    const defaultStyles =
+        'flex flex-row gap-4 items-center justify-center rounded-xs hover: cursor-pointer';
     const combinedClasses =
         `${defaultStyles} ${variantStyles[variant]} ${sizeStyles[size]} ${className}`.trim();
 
