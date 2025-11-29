@@ -8,7 +8,8 @@ const Background = () => {
                 <Dither
                     waveSpeed={0.005}
                     waveFrequency={2}
-                    waveColor={[0.375, 0.375, 0.375]}
+                    waveColor={[0.5, 0.5, 0.5]}
+                    colorNum={8}
                 />
             </div>
             <div className="relative z-10 w-full h-full overflow-auto">
