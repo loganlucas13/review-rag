@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 from routes import auth_blueprint, admin_blueprint, curator_blueprint, enduser_blueprint
 
 from postgres_login import login
@@ -8,12 +9,13 @@ from querylog_db import setup_querylog_db
 from querylogdocument_db import setup_querylogdocument_db
 from vector_db import setup_vector_db
 
-# set up Flask app and register all endpoints
+# set up Flask app with CORS and register all endpoints
 app = Flask(__name__)
-app.register_blueprint(auth_blueprint, url_prefix="/auth")
-app.register_blueprint(admin_blueprint, url_prefix="/admin")
-app.register_blueprint(curator_blueprint, url_prefix="/curator")
-app.register_blueprint(enduser_blueprint, url_prefix="/enduser")
+CORS(app)
+app.register_blueprint(auth_blueprint, url_prefix="/api/auth")
+app.register_blueprint(admin_blueprint, url_prefix="/api/admin")
+app.register_blueprint(curator_blueprint, url_prefix="/api/curator")
+app.register_blueprint(enduser_blueprint, url_prefix="/api/enduser")
 
 
 @app.route("/")

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { clamp } from '../utils/clamp';
+import { makeApiRequest } from '../utils/requests';
 import { ArrowBigLeftDashIcon } from 'lucide-react';
 import { Button } from './Button';
 import { Input } from './Input';
@@ -93,10 +94,29 @@ const SignupForm = ({ goBack }: FormProps) => {
         setCurrentTab(clamp(newTab, 0, 1));
     };
 
-    const handleSubmit = () => {
-        // TODO: make request to backend to create user in database
+    const handleSubmit = async () => {
         if (!role || !username || !password || !name || !email) {
             return; // TODO: add error popup
+        }
+
+        try {
+            const userData = {
+                role: role,
+                username: username,
+                password: password,
+                name: name,
+                email: email,
+            };
+            const response = await makeApiRequest(
+                'auth/register',
+                'POST',
+                userData
+            );
+            console.log('New user registration successful:', response);
+            return true;
+        } catch (error) {
+            console.log('Error while registering new user:', error);
+            return false;
         }
     };
 
