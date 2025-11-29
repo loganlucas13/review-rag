@@ -9,24 +9,22 @@ from tqdm import tqdm  # Progress bar
 
 
 # Sets up database with pgvector extension and creates tables
-def db_setup(cursor: cursor) -> None:
-    cursor.execute("CREATE EXTENSION IF NOT EXISTS vector;")
+def setup_vector_db(cursor: cursor) -> bool:
+    try:
+        cursor.execute("CREATE EXTENSION IF NOT EXISTS vector;")
+        register_vector(cursor.connection)
 
-    register_vector(cursor.connection)
-
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS Vectors (
-        id SERIAL PRIMARY KEY,
-        chunk TEXT NOT NULL,
-        embedding vector(384)
-    );
-    """)
-
-    # clear existing vector data (temporary, will remove during next phase to persist data)
-    cursor.execute("TRUNCATE TABLE Vectors RESTART IDENTITY;")
-
-    cursor.connection.commit()
-    print("Vector database setup successfully\n")
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS Vectors (
+            id SERIAL PRIMARY KEY,
+            chunk TEXT NOT NULL,
+            embedding vector(384)
+        );
+        """)
+        return True
+    except Exception as e:
+        print(f"Error while setting up vector database: {e}")
+        return False
 
 
 # Saves vector embeddings to vector database using pgvector

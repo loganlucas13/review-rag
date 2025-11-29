@@ -3,18 +3,6 @@ from flask import Blueprint
 admin_blueprint = Blueprint("admin", __name__)
 
 
-@admin_blueprint.route("/sign_up", methods=["POST"])
-def sign_up() -> bool:
-    # new user sign up
-    return True
-
-
-@admin_blueprint.route("/log_in", methods=["POST"])
-def log_in() -> bool:
-    # user log in
-    return True
-
-
 @admin_blueprint.route("/retrieve_registered_users", methods=["GET"])
 def retrieve_registered_users() -> None:
     # retrieves a list of all registered users
