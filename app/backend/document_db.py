@@ -3,7 +3,9 @@ import os
 from typing import List
 from psycopg2.extensions import cursor
 from postgres_login import login
-
+from chunking import chunk_text
+from vector_embedding import create_embeddings
+from vector_db import save_to_vector_database
 
 # Creates 'Document' table (if it doesn't exist)
 # Returns True if successful, False otherwise
@@ -70,12 +72,17 @@ def add_document(filename, media_type, file_data, added_by) -> bool:
         with open(file_path, "wb") as file:
             file.write(file_contents)
 
+        #chunking/vectors/embeddings
+        chunks = chunk_text(file_data)
+        embeddings = create_embeddings(chunks)
+
         add_document_query = """
             INSERT INTO "Document" (title, type, source, added_by, has_been_processed)
             VALUES (%s, %s, %s, %s, %s);
         """
 
         cursor = login()
+        save_to_vector_database(cursor, embeddings, chunks)
         cursor.execute(
             add_document_query, (filename, media_type, file_path, added_by, False)
         )

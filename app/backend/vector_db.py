@@ -17,6 +17,7 @@ def setup_vector_db(cursor: cursor) -> bool:
         cursor.execute("""
         CREATE TABLE IF NOT EXISTS "Vectors" (
             id SERIAL PRIMARY KEY,
+            document_id INT NOT NULL,
             chunk TEXT NOT NULL,
             embedding vector(384)
         );
@@ -37,7 +38,7 @@ def save_to_vector_database(
     register_vector(cursor.connection)
 
     insert_table = """
-    INSERT INTO "Vectors" (chunk, embedding) VALUES (%s, %s);
+    INSERT INTO "Vectors" (document_id, chunk, embedding) VALUES (%s, %s, %s);
     """
 
     data_for_insert = []
@@ -59,7 +60,9 @@ def save_to_vector_database(
                 progressBar.update(1)
                 continue
 
-            data_for_insert.append((chunked_data[i], embedding_list))
+            document_id = chunked_data[i].split(" ")[0]
+
+            data_for_insert.append((document_id, chunked_data[i], embedding_list))
 
             # Batch Insertion for Efficiency
             if len(data_for_insert) >= batch_size:
