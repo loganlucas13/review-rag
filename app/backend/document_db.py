@@ -78,13 +78,14 @@ def add_document(filename, media_type, file_data, added_by) -> bool:
 
         add_document_query = """
             INSERT INTO "Document" (title, type, source, added_by, has_been_processed)
-            VALUES (%s, %s, %s, %s, %s);
+            VALUES (%s, %s, %s, %s, %s)
+            RETURNING document_id;
         """
 
         cursor = login()
 
         cursor.execute(
-            add_document_query + " RETURNING document_id", (filename, media_type, file_path, added_by, False)
+            add_document_query, (filename, media_type, file_path, added_by, False)
         )
         document_id = cursor.fetchone()[0]
         save_to_vector_database(cursor, document_id, embeddings, chunks)
