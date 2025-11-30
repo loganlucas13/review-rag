@@ -15,7 +15,7 @@ def setup_vector_db(cursor: cursor) -> bool:
         register_vector(cursor.connection)
 
         cursor.execute("""
-        CREATE TABLE IF NOT EXISTS Vectors (
+        CREATE TABLE IF NOT EXISTS "Vectors" (
             id SERIAL PRIMARY KEY,
             chunk TEXT NOT NULL,
             embedding vector(384)
@@ -37,7 +37,7 @@ def save_to_vector_database(
     register_vector(cursor.connection)
 
     insert_table = """
-    INSERT INTO Vectors (chunk, embedding) VALUES (%s, %s);
+    INSERT INTO "Vectors" (chunk, embedding) VALUES (%s, %s);
     """
 
     data_for_insert = []
