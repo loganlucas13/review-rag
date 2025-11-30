@@ -81,15 +81,24 @@ const CuratorDashboard = ({ user }: { user: User }) => {
                 documentData
             );
             await fetchDocuments();
+            setSelectedFile(null);
             console.log('File upload successful', response);
         } catch (error) {
             console.log('Error while uploading document:', error);
         }
     };
 
-    const handleRemoveFile = async () => {
-        // TODO: remove file from database (use makeApiRequest)
-        return;
+    const handleRemoveFile = async (document_id: number) => {
+        try {
+            const response = await makeApiRequest(
+                `curator/delete_document/${document_id}`,
+                'DELETE'
+            );
+            await fetchDocuments();
+            console.log('Document deletion successful:', response);
+        } catch (error) {
+            console.log('Error while deleting document:', error);
+        }
     };
 
     return (
@@ -223,7 +232,11 @@ const CuratorDashboard = ({ user }: { user: User }) => {
                                         </td>
                                         <td className="px-4 py-2 bg-neutral-900 hover:bg-neutral-900">
                                             <Button
-                                                onClick={() => {}}
+                                                onClick={() => {
+                                                    handleRemoveFile(
+                                                        document.id
+                                                    );
+                                                }}
                                                 variant="destructive"
                                                 size="small"
                                             >

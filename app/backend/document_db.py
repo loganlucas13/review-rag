@@ -50,7 +50,7 @@ def get_documents() -> List[dict]:
                     "type": result[2],
                     "source": result[3],
                     "added_by": result[4],
-                    "timestamp": str(result[5]) if result[6] else None,
+                    "timestamp": str(result[5]) if result[5] else None,
                     "has_been_processed": result[6],
                 }
             )
@@ -87,6 +87,30 @@ def add_document(filename, media_type, file_data, added_by) -> bool:
 
 
 # Removes document with 'document_id'
-def remove_document(document_id: int):
-    # TODO: for 3.2
-    return
+def remove_document(document_id: int) -> bool:
+    try:
+        get_path_query = """
+            SELECT source
+            FROM "Document"
+            WHERE document_id = %s;
+        """
+
+        cursor = login()
+        cursor.execute(get_path_query, (document_id,))
+        file_path = cursor.fetchone()[0]
+
+        remove_document_query = """
+            DELETE FROM "Document"
+            WHERE document_id = %s;
+        """
+
+        cursor.execute(remove_document_query, (document_id,))
+        cursor.close()
+
+        # remove file from 'uploads' folder
+        if file_path and os.path.exists(file_path):
+            os.remove(file_path)
+        return True
+    except Exception as e:
+        print(f"Error while removing document: {e}")
+        return False
