@@ -104,3 +104,23 @@ def get_all_users() -> List[dict]:
 # return a given user's information (as json?)
 def get_user() -> dict:
     return {}
+
+
+# Updates the user with 'user_id' with new attributes (parameters)
+def edit_user(user_id, role, username, password, name, email) -> True:
+    try:
+        edit_user_query = """
+        UPDATE "User"
+        SET role = %s, username = %s, password = %s, name = %s, email = %s
+        WHERE id = %s;
+        """
+
+        cursor = login()
+        cursor.execute(
+            edit_user_query, (role, username, password, name, email, user_id)
+        )
+        cursor.close()
+        return True
+    except Exception as e:
+        print(f"Error while editing user: {e}")
+        return False

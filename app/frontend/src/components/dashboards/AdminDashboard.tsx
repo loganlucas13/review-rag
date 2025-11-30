@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { makeApiRequest } from '../../utils/requests';
 import { Button } from '../Button';
+import { Input } from '../Input';
 
 interface User {
     id: number;
@@ -23,23 +24,58 @@ const AdminDashboard = ({ user }: { user: User }) => {
     const [registeredUsers, setRegisteredUsers] = useState<RegisteredUser[]>(
         []
     );
+    const [userToEdit, setUserToEdit] = useState(-1);
+    const [newRole, setNewRole] = useState('');
+    const [newUsername, setNewUsername] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [newEmail, setNewEmail] = useState('');
+    const [newName, setNewName] = useState('');
+
     const navigate = useNavigate();
 
+    const availableRoles = ['Admin', 'Curator', 'EndUser'];
+
+    const fetchUsers = useCallback(async () => {
+        try {
+            const response = await makeApiRequest(
+                'admin/retrieve_registered_users',
+                'GET'
+            );
+            console.log('User retrieval successful:', response);
+            setRegisteredUsers(response.users);
+        } catch (error) {
+            console.log('Error while retrieving users:', error);
+        }
+    }, []);
+
     useEffect(() => {
-        const fetchUsers = async () => {
+        fetchUsers();
+    }, [fetchUsers]);
+
+    const handleUpdateClick = () => {
+        const updateUser = async () => {
+            const userData = {
+                role: newRole,
+                username: newUsername,
+                password: newPassword,
+                name: newName,
+                email: newEmail,
+            };
             try {
                 const response = await makeApiRequest(
-                    'admin/retrieve_registered_users',
-                    'GET'
+                    `admin/edit_profile/${userToEdit}`,
+                    'PUT',
+                    userData
                 );
-                console.log('User retrieval successful:', response);
-                setRegisteredUsers(response.users);
+                setUserToEdit(-1);
+                await fetchUsers();
+                console.log('Profile update successful:', response);
             } catch (error) {
-                console.log('Error while retrieving users:', error);
+                console.log('Error while updating profile:', error);
             }
         };
-        fetchUsers();
-    }, []);
+        updateUser();
+    };
 
     return (
         <>
@@ -143,7 +179,11 @@ const AdminDashboard = ({ user }: { user: User }) => {
                                         </td>
                                         <td className="px-4 py-2 bg-neutral-900 hover:bg-neutral-900">
                                             <Button
-                                                onClick={() => {}}
+                                                onClick={() => {
+                                                    setUserToEdit(
+                                                        registeredUser.id
+                                                    );
+                                                }}
                                                 variant="destructive"
                                                 size="small"
                                             >
@@ -155,6 +195,63 @@ const AdminDashboard = ({ user }: { user: User }) => {
                             </tbody>
                         </table>
                     </div>
+                    {userToEdit != -1 && (
+                        <div className="flex flex-col border-2 border-neutral-600 w-full p-4 items-center justify-center gap-4">
+                            <span className="text-xl underline decoration-2 text-center">
+                                Editing User ID {userToEdit}
+                            </span>
+                            <div className="flex flex-col gap-2">
+                                <div className="flex flex-row gap-2 pb-4 justify-center">
+                                    {availableRoles.map((role_type) => (
+                                        <button
+                                            key={role_type}
+                                            className={
+                                                `border-2 px-1 py-1 w-1/4 rounded-xs hover:cursor-pointer ` +
+                                                (role_type === newRole
+                                                    ? 'bg-neutral-600 text-neutral-300'
+                                                    : 'border-neutral-500')
+                                            }
+                                            onClick={() => {
+                                                setNewRole(role_type);
+                                            }}
+                                        >
+                                            {role_type}
+                                        </button>
+                                    ))}
+                                </div>
+                                <div className="flex flex-row gap-6">
+                                    <Input
+                                        onChange={setNewUsername}
+                                        value={newUsername}
+                                        placeholder="New Username"
+                                    />
+                                    <Input
+                                        onChange={setNewPassword}
+                                        value={newPassword}
+                                        placeholder="New Password"
+                                        type="password"
+                                    />
+                                    <Input
+                                        onChange={setNewEmail}
+                                        value={newEmail}
+                                        placeholder="New Email"
+                                    />
+                                    <Input
+                                        onChange={setNewName}
+                                        value={newName}
+                                        placeholder="New Name"
+                                    />
+                                </div>
+                            </div>
+                            <Button
+                                onClick={handleUpdateClick}
+                                variant="destructive"
+                                className="w-full font-semibold"
+                            >
+                                Update User
+                            </Button>
+                        </div>
+                    )}
                 </div>
             </div>
         </>

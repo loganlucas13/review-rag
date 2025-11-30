@@ -1,5 +1,5 @@
-from flask import Blueprint, jsonify
-from user_db import get_all_users
+from flask import Blueprint, request, jsonify
+from user_db import get_all_users, edit_user
 
 admin_blueprint = Blueprint("admin", __name__)
 
@@ -15,5 +15,15 @@ def retrieve_registered_users():
 
 @admin_blueprint.route("/edit_profile/<int:user_id>", methods=["PUT"])
 def edit_profile(user_id: int):
-    # allows the admin to modify the profile of user_id
-    return True
+    data = request.get_json()
+
+    role = data.get("role")
+    username = data.get("username")
+    password = data.get("password")
+    name = data.get("name")
+    email = data.get("email")
+
+    if edit_user(user_id, role, username, password, name, email):
+        return jsonify({"success": True}), 200
+    else:
+        return jsonify({"success": False, "message": "Failed to edit user"}), 500
