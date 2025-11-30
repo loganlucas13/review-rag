@@ -3,7 +3,7 @@ import os
 from typing import List
 from psycopg2.extensions import cursor
 from postgres_login import login
-from chunking import chunk_text
+from chunking import chunk_text, wine_data_extraction
 from vector_embedding import create_embeddings
 from vector_db import save_to_vector_database
 
@@ -73,7 +73,8 @@ def add_document(filename, media_type, file_data, added_by) -> bool:
             file.write(file_contents)
 
         #chunking/vectors/embeddings
-        chunks = chunk_text(file_data)
+        file = wine_data_extraction(file_path)
+        chunks = chunk_text(file)
         embeddings = create_embeddings(chunks)
 
         add_document_query = """
