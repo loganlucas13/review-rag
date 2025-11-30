@@ -31,6 +31,8 @@ const AdminDashboard = ({ user }: { user: User }) => {
     const [newEmail, setNewEmail] = useState('');
     const [newName, setNewName] = useState('');
 
+    const [userToDelete, setUserToDelete] = useState(-1);
+
     const navigate = useNavigate();
 
     const availableRoles = ['Admin', 'Curator', 'EndUser'];
@@ -178,17 +180,30 @@ const AdminDashboard = ({ user }: { user: User }) => {
                                                 : 'N/A'}
                                         </td>
                                         <td className="px-4 py-2 bg-neutral-900 hover:bg-neutral-900">
-                                            <Button
-                                                onClick={() => {
-                                                    setUserToEdit(
-                                                        registeredUser.id
-                                                    );
-                                                }}
-                                                variant="destructive"
-                                                size="small"
-                                            >
-                                                Edit
-                                            </Button>
+                                            <div className="flex flex-col gap-2">
+                                                <Button
+                                                    onClick={() => {
+                                                        setUserToEdit(
+                                                            registeredUser.id
+                                                        );
+                                                    }}
+                                                    variant="approval"
+                                                    size="small"
+                                                >
+                                                    Edit
+                                                </Button>
+                                                <Button
+                                                    onClick={() => {
+                                                        setUserToDelete(
+                                                            registeredUser.id
+                                                        );
+                                                    }}
+                                                    variant="destructive"
+                                                    size="small"
+                                                >
+                                                    Delete
+                                                </Button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}

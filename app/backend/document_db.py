@@ -1,5 +1,8 @@
+import base64
+import os
 from typing import List
 from psycopg2.extensions import cursor
+from postgres_login import login
 
 
 # Creates 'Document' table (if it doesn't exist)
@@ -25,10 +28,62 @@ def setup_document_db(cursor: cursor) -> bool:
         return False
 
 
-# not sure what parameters should be
-def add_document():
-    # TODO: for 3.2
-    return
+def get_documents() -> List[dict]:
+    try:
+        get_documents_query = """
+            SELECT document_id, title, type, source, added_by, timestamp, has_been_processed
+            FROM "Document"
+            ORDER BY document_id;
+        """
+
+        cursor = login()
+        cursor.execute(get_documents_query)
+        results = cursor.fetchall()
+        cursor.close()
+
+        documents = []
+        for result in results:
+            documents.append(
+                {
+                    "id": result[0],
+                    "title": result[1],
+                    "type": result[2],
+                    "source": result[3],
+                    "added_by": result[4],
+                    "timestamp": str(result[5]) if result[6] else None,
+                    "has_been_processed": result[6],
+                }
+            )
+        return documents
+    except Exception as e:
+        print(f"Error while logging in user: {e}")
+        return []
+
+
+def add_document(filename, media_type, file_data, added_by) -> bool:
+    try:
+        file_contents = base64.b64decode(file_data)
+
+        os.makedirs("uploads", exist_ok=True)
+
+        file_path = os.path.join("uploads", filename)
+        with open(file_path, "wb") as file:
+            file.write(file_contents)
+
+        add_document_query = """
+            INSERT INTO "Document" (title, type, source, added_by, has_been_processed)
+            VALUES (%s, %s, %s, %s, %s);
+        """
+
+        cursor = login()
+        cursor.execute(
+            add_document_query, (filename, media_type, file_path, added_by, False)
+        )
+        cursor.close()
+        return True
+    except Exception as e:
+        print(f"Error while adding document: {e}")
+        return False
 
 
 # Removes document with 'document_id'

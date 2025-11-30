@@ -10,3 +10,6 @@
 
 # python cache
 __pycache__
+
+# document uploads
+app/backend/uploads

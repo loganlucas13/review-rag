@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../Button';
 import { makeApiRequest } from '../../utils/requests';
@@ -25,17 +25,66 @@ const CuratorDashboard = ({ user }: { user: User }) => {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const navigate = useNavigate();
 
-    const fetchDocuments = async () => {
-        // TODO: get all documents from database + update state
-        return;
-    };
+    const fetchDocuments = useCallback(async () => {
+        try {
+            const response = await makeApiRequest(
+                'curator/get_documents',
+                'GET'
+            );
+            console.log('Document retrieval successful:', response);
+            setDocuments(response.documents);
+        } catch (error) {
+            console.log('Error while retrieving documents:', error);
+        }
+    }, []);
 
-    // TODO: get documents from api on mount and update state
-    useEffect(() => {}, []);
+    useEffect(() => {
+        fetchDocuments();
+    }, [fetchDocuments]);
 
-    const handleUploadFile = async () => {
-        // TODO: upload file to database (use makeApiRequest)
-        return;
+    const handleUploadFile = async (file: File) => {
+        if (!file) {
+            return;
+        }
+
+        try {
+            // convert file to base64 for uploading
+            const fileDataBase64 = await new Promise<string>(
+                (resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                        const result = reader.result;
+                        if (typeof result === 'string') {
+                            resolve(result.split(',')[1]);
+                        } else {
+                            reject(new Error('Failed to read file as string.'));
+                        }
+                    };
+                    reader.onerror = () =>
+                        reject(new Error('File reading failed.'));
+                    reader.readAsDataURL(file);
+                }
+            );
+
+            const mediaType = file.type;
+
+            const documentData = {
+                filename: file.name,
+                media_type: mediaType,
+                file_data: fileDataBase64,
+                added_by: user.id,
+            };
+
+            const response = await makeApiRequest(
+                'curator/upload_document',
+                'POST',
+                documentData
+            );
+            await fetchDocuments();
+            console.log('File upload successful', response);
+        } catch (error) {
+            console.log('Error while uploading document:', error);
+        }
     };
 
     const handleRemoveFile = async () => {
@@ -88,9 +137,13 @@ const CuratorDashboard = ({ user }: { user: User }) => {
                             <input
                                 type="file"
                                 id="file-upload"
-                                onChange={(e) =>
-                                    setSelectedFile(e.target.files[0])
-                                }
+                                onChange={(e) => {
+                                    const file = e.target.files?.[0];
+                                    if (file) {
+                                        setSelectedFile(file);
+                                        handleUploadFile(file);
+                                    }
+                                }}
                                 className="hidden"
                             />
                             <label
@@ -128,7 +181,7 @@ const CuratorDashboard = ({ user }: { user: User }) => {
                                         Previously Processed
                                     </th>
                                     <th className="border-2 border-neutral-600 px-4 py-2 text-center">
-                                        Last Activity
+                                        Timestamp
                                     </th>
                                 </tr>
                             </thead>
@@ -154,7 +207,9 @@ const CuratorDashboard = ({ user }: { user: User }) => {
                                             {document.added_by}
                                         </td>
                                         <td className="border-2 border-neutral-600 px-4 py-2 text-center">
-                                            {document.has_been_processed}
+                                            {document.has_been_processed
+                                                ? 'Yes'
+                                                : 'No'}
                                         </td>
                                         <td className="border-2 border-neutral-600 px-4 py-2 text-center">
                                             {document.timestamp
