@@ -161,7 +161,7 @@ const CuratorDashboard = ({ user }: { user: User }) => {
                             >
                                 <FileUpIcon />
                                 {selectedFile
-                                    ? selectedFile.name
+                                    ? 'Processing Upload...'
                                     : 'Upload Document'}
                             </label>
                         </div>

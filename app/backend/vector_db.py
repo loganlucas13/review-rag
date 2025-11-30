@@ -6,6 +6,7 @@ from pgvector.psycopg2 import register_vector
 from psycopg2.extensions import cursor
 import numpy as np
 from tqdm import tqdm  # Progress bar
+from postgres_login import login
 
 
 # Sets up database with pgvector extension and creates tables
@@ -77,3 +78,19 @@ def save_to_vector_database(
         progressBar.update(len(data_for_insert))
 
     print(f"Successfully saved {len(embeddings)} embeddings to the vector database\n")
+
+
+def delete_document_embeddings(document_id: int) -> bool:
+    try:
+        delete_embeddings_query = """
+            DELETE FROM "Vectors"
+            WHERE document_id = %s;
+        """
+
+        cursor = login()
+        cursor.execute(delete_embeddings_query, (document_id,))
+        cursor.close()
+        return True
+    except Exception as e:
+        print(f"Error while deleting document embeddings: {e}")
+        return False
