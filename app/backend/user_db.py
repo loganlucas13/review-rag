@@ -1,5 +1,6 @@
 from typing import List
 from psycopg2.extensions import cursor
+from postgres_login import login
 
 
 # Create 'User' table in database (if it doesn't exist)
@@ -10,6 +11,7 @@ def setup_user_db(cursor: cursor) -> bool:
             CREATE TABLE IF NOT EXISTS "User" (
                 id SERIAL PRIMARY KEY,
                 name VARCHAR(50) NOT NULL,
+                email VARCHAR(100) NOT NULL UNIQUE,
                 role VARCHAR(7) NOT NULL CHECK(role IN ('EndUser', 'Admin', 'Curator')),
                 username VARCHAR(20) NOT NULL UNIQUE,
                 password VARCHAR(255) NOT NULL,
@@ -24,13 +26,79 @@ def setup_user_db(cursor: cursor) -> bool:
 
 
 # Add a user to the user database
-def add_user() -> bool:
-    return True
+def add_user(role: str, username: str, password: str, name: str, email: str) -> bool:
+    try:
+        add_user_query = """
+            INSERT INTO "User" (role, username, password, name, email)
+            VALUES (%s, %s, %s, %s, %s);
+        """
+
+        cursor = login()
+        cursor.execute(add_user_query, (role, username, password, name, email))
+        cursor.close()
+        return True
+    except Exception as e:
+        print(f"Error while adding user: {e}")
+        return False
 
 
 # Remove a user from the user database
 def remove_user() -> bool:
     return True
+
+
+# Log in user with 'username' and 'password'
+def log_in_user(username: str, password: str) -> tuple[bool, int, str]:
+    try:
+        log_in_user_query = """
+            SELECT id, role FROM "User"
+            WHERE username = %s AND password = %s;
+        """
+
+        cursor = login()
+        cursor.execute(log_in_user_query, (username, password))
+        result = cursor.fetchone()
+        cursor.close()
+
+        if not result:
+            return (False, -1, "")
+        return True, result[0], result[1]
+    except Exception as e:
+        print(f"Error while logging in user: {e}")
+        return False, -1, ""
+
+
+# Gets all users from the 'User' table
+def get_all_users() -> List[dict]:
+    try:
+        get_all_users_query = """
+            SELECT id, name, email, role, username, password, last_activity_timestamp
+            FROM "User"
+            ORDER BY id;
+        """
+
+        cursor = login()
+        cursor.execute(get_all_users_query)
+        results = cursor.fetchall()
+        cursor.close()
+
+        users = []
+        for result in results:
+            users.append(
+                {
+                    "id": result[0],
+                    "name": result[1],
+                    "email": result[2],
+                    "role": result[3],
+                    "username": result[4],
+                    "password": result[5],
+                    "last_activity_timestamp": str(result[6]) if result[6] else None,
+                }
+            )
+        return users
+    except Exception as e:
+        print(f"Error while logging in user: {e}")
+        return []
 
 
 # return a given user's information (as json?)

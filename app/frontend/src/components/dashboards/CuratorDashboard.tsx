@@ -1,16 +1,13 @@
-type UserRole = 'admin' | 'curator' | 'end user' | null;
-
 interface User {
-    name: string;
-    email: string;
-    role: UserRole;
+    id: number;
+    role: string;
     username: string;
 }
 
 const CuratorDashboard = ({ user }: { user: User }) => {
     return (
         <>
-            <div>{user.name}</div>
+            <div>Curator: {user.id}</div>
         </>
     );
 };

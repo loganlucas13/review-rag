@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { clamp } from '../utils/clamp';
 import { makeApiRequest } from '../utils/requests';
 import { ArrowBigLeftDashIcon } from 'lucide-react';
@@ -24,9 +25,30 @@ const LoginForm = ({ goBack }: FormProps) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleSubmit = () => {
-        // TODO: make request to backend Flask API to log in user with current credentials
-        return;
+    const navigate = useNavigate();
+
+    const handleSubmit = async () => {
+        try {
+            const userData = {
+                username: username,
+                password: password,
+            };
+            const response = await makeApiRequest(
+                'auth/log_in',
+                'POST',
+                userData
+            );
+            console.log('User login successful:', response);
+
+            navigate('/dashboard', {
+                state: { user: response.user },
+            });
+
+            return true;
+        } catch (error) {
+            console.log('Error during login:', error);
+            return false;
+        }
     };
 
     return (
@@ -73,7 +95,7 @@ const SignupForm = ({ goBack }: FormProps) => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
 
-    const availableRoles = ['Admin', 'Curator', 'End User'];
+    const availableRoles = ['Admin', 'Curator', 'EndUser'];
     const handleRoleClick = (selectedRole: string) => {
         setRole(selectedRole);
         return;

@@ -16,4 +16,5 @@ def login() -> cursor:
         user=os.getenv("POSTGRES_USER"),
         password=os.getenv("POSTGRES_PASSWORD"),
     )
+    conn.autocommit = True
     return conn.cursor()
