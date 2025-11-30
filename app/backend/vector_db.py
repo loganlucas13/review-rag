@@ -31,6 +31,7 @@ def setup_vector_db(cursor: cursor) -> bool:
 # Saves vector embeddings to vector database using pgvector
 def save_to_vector_database(
     cursor: cursor,
+    document_id: int,
     embeddings: np.ndarray,
     chunked_data: List[str],
     batch_size: int = 100,
@@ -59,8 +60,6 @@ def save_to_vector_database(
                 print(f"Embedding at {i} has dimension {len(embedding_list)}, Skipping")
                 progressBar.update(1)
                 continue
-
-            document_id = chunked_data[i].split(" ")[0]
 
             data_for_insert.append((document_id, chunked_data[i], embedding_list))
 

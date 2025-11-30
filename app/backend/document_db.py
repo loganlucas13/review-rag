@@ -82,10 +82,12 @@ def add_document(filename, media_type, file_data, added_by) -> bool:
         """
 
         cursor = login()
-        save_to_vector_database(cursor, embeddings, chunks)
+
         cursor.execute(
-            add_document_query, (filename, media_type, file_path, added_by, False)
+            add_document_query + " RETURNING document_id", (filename, media_type, file_path, added_by, False)
         )
+        document_id = cursor.fetchone()[0]
+        save_to_vector_database(cursor, document_id, embeddings, chunks)
         cursor.close()
         return True
     except Exception as e:
