@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from user_db import get_all_users, edit_user
+from user_db import get_all_users, edit_user, remove_user
 
 admin_blueprint = Blueprint("admin", __name__)
 
@@ -25,3 +25,11 @@ def edit_profile(user_id: int):
     if edit_user(user_id, role, username, password, name, email):
         return jsonify({"success": True}), 200
     return jsonify({"success": False, "message": "Failed to edit user"}), 500
+
+
+@admin_blueprint.route("/delete_profile/<int:user_id>", methods=["DELETE"])
+def delete_profile(user_id: int):
+    success = remove_user(user_id)
+    if success:
+        return jsonify({"success": True}), 200
+    return jsonify({"success": False, "message": "Failed to delete user"}), 500

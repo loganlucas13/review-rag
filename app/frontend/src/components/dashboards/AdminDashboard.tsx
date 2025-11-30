@@ -31,8 +31,6 @@ const AdminDashboard = ({ user }: { user: User }) => {
     const [newEmail, setNewEmail] = useState('');
     const [newName, setNewName] = useState('');
 
-    const [userToDelete, setUserToDelete] = useState(-1);
-
     const navigate = useNavigate();
 
     const availableRoles = ['Admin', 'Curator', 'EndUser'];
@@ -79,10 +77,26 @@ const AdminDashboard = ({ user }: { user: User }) => {
         updateUser();
     };
 
+    const handleDeleteClick = (userToDelete: number) => {
+        const deleteUser = async () => {
+            try {
+                const response = await makeApiRequest(
+                    `admin/delete_profile/${userToDelete}`,
+                    'DELETE'
+                );
+                await fetchUsers();
+                console.log('Profile deletion successful:', response);
+            } catch (error) {
+                console.log('Error while deleting profile:', error);
+            }
+        };
+        deleteUser();
+    };
+
     return (
         <>
             <div className="flex flex-col h-screen items-center justify-center gap-16">
-                <div className="fixed top-4 left-4 bg-neutral-900 text-neutral-300 border-2 border-neutral-600 text-2xl px-4 py-2 rounded-xs">
+                <div className="fixed top-4 left-4 bg-neutral-900 text-neutral-300 border-2 border-neutral-600 text-xl px-4 py-2 rounded-xs">
                     <div className="flex flex-col gap-2">
                         <div>
                             <span className="font-bold underline decoration-2">
@@ -183,9 +197,17 @@ const AdminDashboard = ({ user }: { user: User }) => {
                                             <div className="flex flex-col gap-2">
                                                 <Button
                                                     onClick={() => {
-                                                        setUserToEdit(
-                                                            registeredUser.id
-                                                        );
+                                                        if (
+                                                            userToEdit === -1 ||
+                                                            userToEdit !==
+                                                                registeredUser.id
+                                                        ) {
+                                                            setUserToEdit(
+                                                                registeredUser.id
+                                                            );
+                                                        } else {
+                                                            setUserToEdit(-1);
+                                                        }
                                                     }}
                                                     variant="approval"
                                                     size="small"
@@ -194,7 +216,7 @@ const AdminDashboard = ({ user }: { user: User }) => {
                                                 </Button>
                                                 <Button
                                                     onClick={() => {
-                                                        setUserToDelete(
+                                                        handleDeleteClick(
                                                             registeredUser.id
                                                         );
                                                     }}

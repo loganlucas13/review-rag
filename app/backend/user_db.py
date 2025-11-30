@@ -44,12 +44,35 @@ def add_user(role: str, username: str, password: str, name: str, email: str) -> 
 
 
 # Remove a user from the user database
-def remove_user() -> bool:
-    # TODO: for 3.3 (requirement 4)
+def remove_user(user_id: int) -> bool:
+    try:
+        get_role_query = """
+            SELECT role
+            FROM "User"
+            WHERE id = %s;
+        """
 
-    # IMPORTANT: check if user is an End User; if they are, delete all of their query logs as well
-    # use `remove_user_querylogs`
-    return True
+        remove_user_query = """
+            DELETE FROM "User"
+            WHERE id = %s;
+        """
+
+        cursor = login()
+        cursor.execute(get_role_query, (user_id,))
+        role = cursor.fetchone()[0]
+
+        # remove all query logs if user is an EndUser
+        if role == "EndUser":
+            status = remove_user_querylogs(user_id)
+            if not status:
+                raise Exception("Error while removing user query logs.")
+
+        cursor.execute(remove_user_query, (user_id,))
+        cursor.close()
+        return True
+    except Exception as e:
+        print(f"Error while deleting user: {e}")
+        return False
 
 
 # Log in user with 'username' and 'password'

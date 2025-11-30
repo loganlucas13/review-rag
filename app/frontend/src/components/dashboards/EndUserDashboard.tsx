@@ -19,7 +19,7 @@ const EndUserDashboard = ({ user }: { user: User }) => {
     return (
         <>
             <div className="flex flex-col h-screen items-center justify-center gap-16">
-                <div className="fixed top-4 left-4 bg-neutral-900 text-neutral-300 border-2 border-neutral-600 text-2xl px-4 py-2 rounded-xs">
+                <div className="fixed top-4 left-4 bg-neutral-900 text-neutral-300 border-2 border-neutral-600 text-xl px-4 py-2 rounded-xs">
                     <div className="flex flex-col gap-2">
                         <div>
                             <span className="font-bold underline decoration-2">

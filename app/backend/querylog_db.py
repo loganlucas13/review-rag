@@ -1,5 +1,6 @@
 from typing import List
 from psycopg2.extensions import cursor
+from postgres_login import login
 
 
 # Creates 'QueryLog' table (if it doesn't exist)
@@ -30,5 +31,37 @@ def add_query_log():
 
 # Removes all querylogs from a specific user
 def remove_user_querylogs(user_id: int):
-    # TODO
-    return True
+    try:
+        get_query_ids_query = """
+            SELECT query_id
+            FROM "QueryLog"
+            WHERE id = %s;
+        """
+
+        delete_query_ids_query = """
+            DELETE FROM "QueryLogDocument"
+            WHERE query_id = ANY(%s);
+        """
+
+        delete_query_logs_query = """
+            DELETE FROM "QueryLog"
+            WHERE query_id = ANY(%s);
+        """
+
+        cursor = login()
+        cursor.execute(get_query_ids_query, (user_id,))
+        query_ids = cursor.fetchall()
+        query_ids = [
+            row[0] for row in query_ids
+        ]  # get first element of every response tuple
+
+        if not query_ids:
+            return True
+
+        cursor.execute(delete_query_ids_query, (query_ids,))
+        cursor.execute(delete_query_logs_query, (query_ids,))
+        cursor.close()
+        return True
+    except Exception as e:
+        print(f"Error while removing user query logs: {e}")
+        return False
