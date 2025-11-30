@@ -1,4 +1,4 @@
-type ButtonVariants = 'primary' | 'secondary' | 'destructive';
+type ButtonVariants = 'primary' | 'secondary' | 'destructive' | 'approval';
 type ButtonSize = 'default' | 'small' | 'large';
 
 const variantStyles = {
@@ -6,6 +6,7 @@ const variantStyles = {
         'bg-neutral-900 text-neutral-300 border-2 border-neutral-600 font-semibold',
     secondary: 'bg-neutral-600 text-neutral-300 text-lg font-semibold',
     destructive: 'bg-red-400 text-red-900',
+    approval: 'bg-green-800 text-green-200',
 };
 
 const sizeStyles = {

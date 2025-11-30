@@ -1,6 +1,7 @@
 from typing import List
 from psycopg2.extensions import cursor
 from postgres_login import login
+from querylog_db import remove_user_querylogs
 
 
 # Create 'User' table in database (if it doesn't exist)
@@ -44,6 +45,10 @@ def add_user(role: str, username: str, password: str, name: str, email: str) -> 
 
 # Remove a user from the user database
 def remove_user() -> bool:
+    # TODO: for 3.3 (requirement 4)
+
+    # IMPORTANT: check if user is an End User; if they are, delete all of their query logs as well
+    # use `remove_user_querylogs`
     return True
 
 
@@ -99,11 +104,6 @@ def get_all_users() -> List[dict]:
     except Exception as e:
         print(f"Error while logging in user: {e}")
         return []
-
-
-# return a given user's information (as json?)
-def get_user() -> dict:
-    return {}
 
 
 # Updates the user with 'user_id' with new attributes (parameters)

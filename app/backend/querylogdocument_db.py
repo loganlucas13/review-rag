@@ -20,3 +20,9 @@ def setup_querylogdocument_db(cursor: cursor) -> bool:
     except Exception as e:
         print(f"Error while creating QueryLogDocument table: {e}")
         return False
+
+
+# Add an entry to the 'QueryLogDocument' table
+def add_querylogdocument_entry():
+    # TODO
+    return True

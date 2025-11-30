@@ -20,3 +20,15 @@ def setup_querylog_db(cursor: cursor) -> bool:
     except Exception as e:
         print(f"Error while creating QueryLog database: {e}")
         return False
+
+
+# Adds a QueryLog whenever a query is made
+def add_query_log():
+    # TODO: for 3.3
+    return True
+
+
+# Removes all querylogs from a specific user
+def remove_user_querylogs(user_id: int):
+    # TODO
+    return True

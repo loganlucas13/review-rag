@@ -112,7 +112,7 @@ const AdminDashboard = ({ user }: { user: User }) => {
                     </div>
                 </div>
 
-                <div className="flex flex-col items-center gap-4 bg-neutral-900 text-neutral-300 border-2 border-neutral-600 p-4 rounded-xs">
+                <div className="flex flex-col gap-4 bg-neutral-900 text-neutral-300 border-2 border-neutral-600 p-4 rounded-xs">
                     <h1 className="text-3xl underline decoration-2">
                         All Users
                     </h1>

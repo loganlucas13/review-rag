@@ -23,3 +23,15 @@ def setup_document_db(cursor: cursor) -> bool:
     except Exception as e:
         print(f"Error while creating Document table: {e}")
         return False
+
+
+# not sure what parameters should be
+def add_document():
+    # TODO: for 3.2
+    return
+
+
+# Removes document with 'document_id'
+def remove_document(document_id: int):
+    # TODO: for 3.2
+    return
