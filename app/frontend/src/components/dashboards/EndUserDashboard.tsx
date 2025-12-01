@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../Button';
 import { Input } from '../Input';
+import { ResponseEntry } from '../ResponseEntry';
 import { makeApiRequest } from '../../utils/requests';
 
 interface User {
@@ -23,12 +24,13 @@ interface Document {
 const EndUserDashboard = ({ user }: { user: User }) => {
     const [query, setQuery] = useState('');
     const [submitted, setSubmitted] = useState(false);
-    const [output, setOutput] = useState('');
+    const [result, setResult] = useState(null);
     const [documents, setDocuments] = useState<Document[]>([]);
     const [currentDocument, setCurrentDocument] = useState(-1);
     const navigate = useNavigate();
 
     const handleQuerySubmit = async (query: string, document_id: number) => {
+        setResult(null);
         const queryDetails = {
             query: query,
             user_id: user.id,
@@ -40,11 +42,11 @@ const EndUserDashboard = ({ user }: { user: User }) => {
                 'POST',
                 queryDetails
             );
-            setOutput(response.results.cosine_similarity[0].text);
+            setResult(response);
             console.log('Query submitted successfully:', response);
         } catch (error) {
             console.log('Error while submitting query:', error);
-            setOutput('Error while submitting query...');
+            setResult(null);
         }
     };
 
@@ -129,8 +131,8 @@ const EndUserDashboard = ({ user }: { user: User }) => {
 
                 <div className="flex flex-col w-1/2 items-center gap-4 bg-neutral-900 text-neutral-300 border-2 border-neutral-600 p-4 rounded-xs">
                     {submitted && (
-                        <div className="w-full h-fit bg-neutral-800 border-2 border-neutral-600 rounded-xs p-4 overflow-y-auto">
-                            {output || ''}
+                        <div className="w-full max-h-96 bg-neutral-800 border-2 border-neutral-600 rounded-xs p-4 overflow-y-auto">
+                            {result && <ResponseEntry results={result} />}
                         </div>
                     )}
 

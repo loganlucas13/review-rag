@@ -107,7 +107,7 @@ const SignupForm = ({ goBack }: FormProps) => {
         let newTab;
         if (direction === 'forward') {
             if (!role || !username || !password) {
-                return; // TODO: add error popup
+                return;
             }
             newTab = currentTab + 1;
         } else {
@@ -118,7 +118,7 @@ const SignupForm = ({ goBack }: FormProps) => {
 
     const handleSubmit = async () => {
         if (!role || !username || !password || !name || !email) {
-            return; // TODO: add error popup
+            return;
         }
 
         try {
