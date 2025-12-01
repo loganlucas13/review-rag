@@ -12,7 +12,7 @@ def setup_querylog_db(cursor: cursor) -> bool:
                 query_id SERIAL PRIMARY KEY,
                 id INT NOT NULL,
                 text VARCHAR(255) NOT NULL,
-                timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                timestamp TIMESTAMP DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'America/Chicago'),
                 FOREIGN KEY (id) REFERENCES "User"(id)
             );
         """

@@ -1,12 +1,12 @@
 from flask import Blueprint, request, jsonify
-from user_db import add_user, log_in_user
+from user_db import add_user, log_in_user, update_user_timestamp
 
 auth_blueprint = Blueprint("auth", __name__)
 
 
+# New user sign up
 @auth_blueprint.route("/register", methods=["POST"])
 def register():
-    # new user sign up
     try:
         data = request.get_json()
 
@@ -38,6 +38,7 @@ def register():
         return jsonify({"success": False, "message": str(e)}), 400
 
 
+# Logging in existing user
 @auth_blueprint.route("/log_in", methods=["POST"])
 def log_in():
     try:
@@ -50,6 +51,9 @@ def log_in():
 
         if not success:
             raise Exception("Failed to log in user")
+
+        # update timestamp whenever user logs in
+        update_user_timestamp(user_id)
 
         return jsonify(
             {

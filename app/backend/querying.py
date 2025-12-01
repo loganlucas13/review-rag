@@ -71,7 +71,8 @@ def format_results(results: List[str], algorithm_name: str) -> List[dict]:
     return formatted
 
 
-def perform_query(query: str, user_id: int, document_id: int):
+# Performs similarity tests on the given 'query' parameter and returns results
+def perform_query(query: str, user_id: int, document_id: int) -> dict:
     try:
         query_id = add_query_log(query, user_id)
         if query_id == -1:

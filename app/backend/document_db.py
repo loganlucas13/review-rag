@@ -20,7 +20,7 @@ def setup_document_db(cursor: cursor) -> bool:
                 type VARCHAR(50),
                 source VARCHAR(50),
                 added_by INT NOT NULL,
-                timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                timestamp TIMESTAMP DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'America/Chicago'),
                 has_been_processed BOOLEAN DEFAULT FALSE,
                 FOREIGN KEY (added_by) REFERENCES "User"(id)
             );
@@ -32,6 +32,7 @@ def setup_document_db(cursor: cursor) -> bool:
         return False
 
 
+# Gets all documents from the database and returns their data as a List
 def get_documents() -> List[dict]:
     try:
         get_documents_query = """
@@ -64,6 +65,7 @@ def get_documents() -> List[dict]:
         return []
 
 
+# Adds a document with the given parameters into the database
 def add_document(filename, media_type, file_data, added_by) -> bool:
     try:
         file_contents = base64.b64decode(file_data)
@@ -88,7 +90,7 @@ def add_document(filename, media_type, file_data, added_by) -> bool:
         cursor = login()
 
         cursor.execute(
-            add_document_query, (filename, media_type, file_path, added_by, False)
+            add_document_query, (filename, media_type, file_path, added_by, True)
         )
         document_id = cursor.fetchone()[0]
         save_to_vector_database(cursor, document_id, embeddings, chunks)

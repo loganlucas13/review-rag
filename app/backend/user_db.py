@@ -16,7 +16,7 @@ def setup_user_db(cursor: cursor) -> bool:
                 role VARCHAR(7) NOT NULL CHECK(role IN ('EndUser', 'Admin', 'Curator')),
                 username VARCHAR(20) NOT NULL UNIQUE,
                 password VARCHAR(255) NOT NULL,
-                last_activity_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                last_activity_timestamp TIMESTAMP DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'America/Chicago')
             );
         """
         cursor.execute(create_user_table_query)
@@ -130,7 +130,7 @@ def get_all_users() -> List[dict]:
 
 
 # Updates the user with 'user_id' with new attributes (parameters)
-def edit_user(user_id, role, username, password, name, email) -> True:
+def edit_user(user_id, role, username, password, name, email) -> bool:
     try:
         edit_user_query = """
         UPDATE "User"
@@ -146,4 +146,22 @@ def edit_user(user_id, role, username, password, name, email) -> True:
         return True
     except Exception as e:
         print(f"Error while editing user: {e}")
+        return False
+
+
+# Updates the timestamp of a user to the current time
+def update_user_timestamp(user_id: int) -> bool:
+    try:
+        update_timestamp_query = """
+            UPDATE "User"
+            SET last_activity_timestamp = NOW() AT TIME ZONE 'America/Chicago'
+            WHERE id = %s;
+        """
+
+        cursor = login()
+        cursor.execute(update_timestamp_query, (user_id,))
+        cursor.close()
+        return True
+    except Exception as e:
+        print(f"Error while updating user timestamp: {e}")
         return False

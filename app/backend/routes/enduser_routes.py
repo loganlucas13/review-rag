@@ -4,6 +4,8 @@ from querying import perform_query
 enduser_blueprint = Blueprint("enduser", __name__)
 
 
+# Submits a query for processing from an EndUser
+# Returns top-5 most similar results (using both Cosine Similarity and Inner Product)
 @enduser_blueprint.route("/submit_query", methods=["POST"])
 def submit_query():
     try:

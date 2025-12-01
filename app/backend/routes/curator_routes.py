@@ -4,6 +4,7 @@ from document_db import get_documents, add_document, remove_document
 curator_blueprint = Blueprint("curator", __name__)
 
 
+# Retrieves all available documents
 @curator_blueprint.route("/get_documents", methods=["GET"])
 def get_all_documents():
     results = get_documents()
@@ -12,6 +13,7 @@ def get_all_documents():
     return jsonify({"success": False, "message": "Failed to retrieve documents"}), 500
 
 
+# Uploads a document (sent through request) to be made available for search
 @curator_blueprint.route("/upload_document", methods=["POST"])
 def upload_document():
     data = request.get_json()
@@ -28,6 +30,7 @@ def upload_document():
     return jsonify({"success": False, "message": "Failed to upload document"}), 500
 
 
+# Deletes a document with the given document_id
 @curator_blueprint.route("/delete_document/<int:document_id>", methods=["DELETE"])
 def delete_document(document_id: int):
     success = remove_document(document_id)

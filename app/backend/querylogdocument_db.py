@@ -24,7 +24,7 @@ def setup_querylogdocument_db(cursor: cursor) -> bool:
 
 
 # Add an entry to the 'QueryLogDocument' table
-def add_querylogdocument_entry(query_id: int, document_id: int):
+def add_querylogdocument_entry(query_id: int, document_id: int) -> bool:
     try:
         add_entry_query = """
             INSERT INTO "QueryLogDocument" (query_id, document_id)
@@ -40,7 +40,8 @@ def add_querylogdocument_entry(query_id: int, document_id: int):
         return False
 
 
-def remove_querylogdocument_entry(document_id: int):
+# Removes an entry from the 'QueryLogDocument' table with the given document_id
+def remove_querylogdocument_entry(document_id: int) -> bool:
     try:
         remove_entry_query = """
             DELETE FROM "QueryLogDocument"
