@@ -1,5 +1,6 @@
 from typing import List
 from psycopg2.extensions import cursor
+from postgres_login import login
 
 
 # Creates 'QueryLogDocument' table (if it doesn't exist)
@@ -23,6 +24,33 @@ def setup_querylogdocument_db(cursor: cursor) -> bool:
 
 
 # Add an entry to the 'QueryLogDocument' table
-def add_querylogdocument_entry():
-    # TODO
-    return True
+def add_querylogdocument_entry(query_id: int, document_id: int):
+    try:
+        add_entry_query = """
+            INSERT INTO "QueryLogDocument" (query_id, document_id)
+            VALUES (%s, %s);
+        """
+
+        cursor = login()
+        cursor.execute(add_entry_query, (query_id, document_id))
+        cursor.close()
+        return True
+    except Exception as e:
+        print(f"Error while adding QueryLogDocument entry: {e}")
+        return False
+
+
+def remove_querylogdocument_entry(document_id: int):
+    try:
+        remove_entry_query = """
+            DELETE FROM "QueryLogDocument"
+            WHERE document_id = %s
+        """
+
+        cursor = login()
+        cursor.execute(remove_entry_query, (document_id,))
+        cursor.close()
+        return True
+    except Exception as e:
+        print(f"Error while removing QueryLogDocument entry: {e}")
+        return False

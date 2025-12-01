@@ -24,13 +24,25 @@ def setup_querylog_db(cursor: cursor) -> bool:
 
 
 # Adds a QueryLog whenever a query is made
-def add_query_log():
-    # TODO: for 3.3
-    return True
+def add_query_log(text: str, user_id: int) -> int:
+    try:
+        add_querylog_query = """
+            INSERT INTO "QueryLog" (id, text)
+            values (%s, %s)
+            RETURNING query_id;
+        """
+        cursor = login()
+        cursor.execute(add_querylog_query, (user_id, text))
+        query_id = cursor.fetchone()[0]
+        cursor.close()
+        return query_id
+    except Exception as e:
+        print(f"Error while adding query log: {e}")
+        return -1
 
 
 # Removes all querylogs from a specific user
-def remove_user_querylogs(user_id: int):
+def remove_user_querylogs(user_id: int) -> bool:
     try:
         get_query_ids_query = """
             SELECT query_id

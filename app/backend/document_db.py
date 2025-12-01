@@ -6,6 +6,7 @@ from postgres_login import login
 from chunking import chunk_text, wine_data_extraction
 from vector_embedding import create_embeddings
 from vector_db import save_to_vector_database, delete_document_embeddings
+from querylogdocument_db import remove_querylogdocument_entry
 
 
 # Creates 'Document' table (if it doesn't exist)
@@ -75,7 +76,7 @@ def add_document(filename, media_type, file_data, added_by) -> bool:
 
         # chunking/vectors/embeddings
         file = wine_data_extraction(file_path)
-        chunks = chunk_text(file)
+        chunks = chunk_text(file, max_words=25, overlap=5)
         embeddings = create_embeddings(chunks)
 
         add_document_query = """
@@ -101,6 +102,14 @@ def add_document(filename, media_type, file_data, added_by) -> bool:
 # Removes document with 'document_id'
 def remove_document(document_id: int) -> bool:
     try:
+        success = remove_querylogdocument_entry(document_id)
+        if not success:
+            raise Exception("Error while deleting QueryLogDocument entry")
+
+        success = delete_document_embeddings(document_id)
+        if not success:
+            raise Exception("Error while deleting document embeddings")
+
         get_path_query = """
             SELECT source
             FROM "Document"
@@ -122,11 +131,6 @@ def remove_document(document_id: int) -> bool:
         # remove file from 'uploads' folder
         if file_path and os.path.exists(file_path):
             os.remove(file_path)
-
-        success = delete_document_embeddings(document_id)
-
-        if not success:
-            raise Exception("Error while deleting document embeddings")
         return True
     except Exception as e:
         print(f"Error while removing document: {e}")
